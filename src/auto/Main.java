@@ -1,6 +1,7 @@
 package auto;
 
-import java.io.File;
+import common.Commons;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -25,41 +26,33 @@ public final class Main {
     private static Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) {
-        try {
-            fileWriter = new FileWriter(new File(FILE_NAME));
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    fileWriter.close();
-                } catch (IOException error) {
-                    System.out.println("Could not close the stream: " + error.getMessage());
-                }
-            }));
-        } catch (IOException error) {
-            System.out.println("Problems opening the file: " + error.getMessage());
-        }
-
+        // Create the file writer
+        fileWriter = Commons.createFileWriter(FILE_NAME).orElse(null);
         // The menu forever
-        while(menu());
+        while (true) {
+            menu();
+        }
     }
 
-    /** Print the output to the file */
+    /** Print the output to the file when the file exists */
     public static void println(String value) {
         try {
-            fileWriter.write(value + '\n');
+            if (fileWriter != null) {
+                fileWriter.write(value + '\n');
+            }
         } catch (IOException error) {
             System.out.println("Could not write to the file: " + error.getMessage());
         }
     }
 
     /** print the menu, return true for continue, false to close program */
-    public static boolean menu() {
+    public static void menu() {
         List<MenuOption<Car>> items = generateMenu(car);
         int choice = 1, itemSize = items.size();
         for (MenuOption<Car> item : items) {
             System.out.println(String.format("[%d] %s", choice++, item.getItemName()));
         }
 
-        boolean state = false;
         System.out.print(INPUT);
 
         try {
@@ -71,13 +64,10 @@ public final class Main {
             System.out.println(SEPARATE);
             items.get(value).processAction();
             System.out.println(SEPARATE);
-            state = true;
         } catch (InputMismatchException | IllegalStateException | IndexOutOfBoundsException error) {
             System.out.println(String.format(INPUT_ERROR, itemSize));
             in = new Scanner(System.in);
         }
-
-        return state;
     }
 
     /** Generate the list of menu options with the instance of the car */

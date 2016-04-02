@@ -10,14 +10,10 @@ import java.util.*;
 /** This is the drive class it contains the menu an the interface to interact with the car */
 public final class Main {
     // Translations
-    private static final String SEPARATE = "--------------------";
-    private static final String INPUT_ERROR = "Invalid select use 1-%d";
-    private static final String INPUT = "Select one: ";
     private static final String MOVE_WHEELS = "Move the wheels";
     private static final String START_ENGINE = "Start the engine";
     private static final String OPEN_DOORS = "Open the doors";
     private static final String STOP_CAR = "Stop the car";
-    private static final String END_PROGRAM = "End Program";
     // The car used for this program
     private static final Car car = new Car();
     private static final String FILE_NAME = System.getProperty("file_name", "output.txt");
@@ -35,38 +31,12 @@ public final class Main {
 
     /** Print the output to the file when the file exists */
     public static void println(String value) {
-        try {
-            if (fileWriter != null) {
-                fileWriter.write(value + '\n');
-            }
-        } catch (IOException error) {
-            System.out.println("Could not write to the file: " + error.getMessage());
-        }
+        Commons.println(fileWriter, value);
     }
 
     /** print the menu, return true for continue, false to close program */
     public static void menu() {
-        List<MenuOption<Car>> items = generateMenu(car);
-        int choice = 1, itemSize = items.size();
-        for (MenuOption<Car> item : items) {
-            System.out.println(String.format("[%d] %s", choice++, item.getItemName()));
-        }
-
-        System.out.print(INPUT);
-
-        try {
-            int value = in.nextInt() - 1;
-            if (value < 0 || value > itemSize) {
-                System.out.println(String.format(INPUT_ERROR, itemSize));
-            }
-
-            System.out.println(SEPARATE);
-            items.get(value).processAction();
-            System.out.println(SEPARATE);
-        } catch (InputMismatchException | IllegalStateException | IndexOutOfBoundsException error) {
-            System.out.println(String.format(INPUT_ERROR, itemSize));
-            in = new Scanner(System.in);
-        }
+        in = Commons.menu(generateMenu(car), in);
     }
 
     /** Generate the list of menu options with the instance of the car */
@@ -76,7 +46,7 @@ public final class Main {
             new MenuOption<>(car, START_ENGINE, Car::startEngine),
             new MenuOption<>(car, OPEN_DOORS, Car::openDoors),
             new MenuOption<>(car, STOP_CAR, Car::stopCar),
-            new MenuOption<>(car, END_PROGRAM, arg -> System.exit(0))
+            new MenuOption<>(car, Commons.END_PROGRAM, arg -> System.exit(0))
         );
     }
 }

@@ -1,59 +1,91 @@
 package percentile;
 
+import common.Commons;
+import common.MenuOption;
+
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-import java.util.stream.IntStream;
+import java.util.*;
 
-/** This program will read the file located in the current working director , or from arg -Dfile_name */
+/** This program will write the file from arg -Dfile_name or use the default */
 public class Main {
-    private static final String FILE_NAME = System.getProperty("file_name", "median.txt");
-
+    private static final String ASK_PERCENTILE = "Enter a percentile to look for: ";
+    private static final String ASK_DATA_SET = "Enter a data set separated by commas: ";
+    private static final String FILE_NAME = System.getProperty("file_name", "output.txt");
+    private static FileWriter fileWriter;
+    private static Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) {
-        List<String> input = readInput();
-        input.forEach(line -> {
-            int[] elemetns = parseInput(line);
-            outputPercentile(elemetns);
-        });
+        fileWriter = Commons.createFileWriter(FILE_NAME).orElse(null);
+
+        int percentile = askPercentile();
+        int[] dataSet = askDataSet();
+
+        Percentile data = new Percentile(percentile, dataSet);
+        outputPercentile(data);
+        while (true) menu(data);
+    }
+
+    /** Ask the user for the data set */
+    public static int[] askDataSet() {
+        String input = readInput(ASK_DATA_SET);
+        int[] data =Sorting.mergeSort(parseInput(input));
+        for (int i : data) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+        return data;
+    }
+
+    /** Ask the user for a percentile make sure its correct */
+    public static int askPercentile() {
+        try {
+            String input = readInput(ASK_PERCENTILE);
+            return Math.abs(Integer.parseInt(input));
+        } catch (NumberFormatException error) {
+            System.out.println(Commons.ASK_ERROR);
+            in = new Scanner(System.in);
+            return askPercentile();
+        }
+    }
+
+    /** Read the input from the user */
+    public static String readInput(String message) {
+        try {
+            System.out.print(message);
+            return in.nextLine();
+        } catch (InputMismatchException | IllegalStateException error) {
+            in = new Scanner(System.in);
+            return readInput(message);
+        }
+    }
+
+    /** The menu for the options */
+    public static void menu(Percentile percentile) {
+        in = Commons.menu(generateMenu(percentile), in);
+    }
+
+    /** Generate the list of menu options with the instance of the percentile */
+    public static List<MenuOption<Percentile>> generateMenu(Percentile percentile) {
+        return Arrays.asList(
+            new MenuOption<>(percentile, "Change and view percentile", arg -> {
+                in = new Scanner(System.in);
+                arg.percentile = askPercentile();
+                outputPercentile(arg);
+            }),
+            new MenuOption<>(percentile, "End Program", arg -> System.exit(0))
+        );
+    }
+
+    /** Print the output to the file when the file exists */
+    public static void println(String value) {
+        Commons.println(fileWriter, value);
     }
 
     /** Out put the percentile of the data set */
-    public static void outputPercentile(int[] integers) {
-        integers = Sorting.mergeSort(integers);
-        double median = IntStream.of(integers).sum() / integers.length;
-        double percentile = (median * 100) / integers.length;
-
-        System.out.println(median + " - " + percentile);
-    }
-
-    /** Print the array for debugging purposes */
-    public static void printArray(int[] array) {
-        for (int item : array) {
-            System.out.print(item + " ");
-        }
-        System.out.println();
-    }
-
-    /** Read the inputs from the input file */
-    private static List<String> readInput() {
-        File file = new File(FILE_NAME);
-        List<String> lines = new ArrayList<>();
-
-        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file))) {
-            Scanner in = new Scanner(reader);
-            while (in.hasNextLine()) {
-                String line = in.nextLine();
-                if (line == null || line.isEmpty()) continue;
-                lines.add(in.nextLine());
-            }
-        } catch (IOException error) {
-            System.out.println(String.format("Could not find a file name by %s", FILE_NAME));
-        }
-
-        return lines;
+    public static void outputPercentile(Percentile percentile) {
+        int index = (int) Math.ceil((percentile.percentile * 100) % percentile.dataset.length);
+        System.out.println(percentile.percentile + ": " + percentile.dataset[index]);
+        println(String.valueOf(percentile.dataset[index]));
     }
 
     /** Gather the list of inputs from a string of numbers separated by a comma */
@@ -71,5 +103,16 @@ public class Main {
         }
 
         return Arrays.copyOf(inputs, pos + 1);
+    }
+
+    /** A data to pass around the percentile for the menu system */
+    private static class Percentile {
+        private int percentile;
+        private int[] dataset;
+
+        public Percentile(int percentile, int[] dataset) {
+            this.percentile = percentile;
+            this.dataset = dataset;
+        }
     }
 }

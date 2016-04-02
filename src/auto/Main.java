@@ -1,11 +1,11 @@
 package auto;
 
 import common.Commons;
+import common.MenuOption;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Consumer;
 
 /** This is the drive class it contains the menu an the interface to interact with the car */
 public final class Main {
@@ -13,7 +13,6 @@ public final class Main {
     private static final String SEPARATE = "--------------------";
     private static final String INPUT_ERROR = "Invalid select use 1-%d";
     private static final String INPUT = "Select one: ";
-    private static final String UNKNOWN = "unknown";
     private static final String MOVE_WHEELS = "Move the wheels";
     private static final String START_ENGINE = "Start the engine";
     private static final String OPEN_DOORS = "Open the doors";
@@ -82,32 +81,4 @@ public final class Main {
     }
 
 
-    /** Create menu options for the menu */
-    private static class MenuOption<T> {
-        private T inst;
-        private Consumer<T> action;
-        private String itemName;
-
-        /** Create the menu option, provide the inst for the action, the name of the action then the action */
-        public MenuOption(T inst, String itemName, Consumer<T> action) {
-            this.inst = Objects.requireNonNull(inst, "The instance must not be null");
-            this.action = Objects.requireNonNull(action, "The action must not be null");
-            this.itemName = (itemName == null) ? UNKNOWN : itemName;
-        }
-
-        /** Get the name of the item */
-        public String getItemName() {
-            return itemName;
-        }
-
-        /** Try to process the action, when the action fails prints the error to stderr */
-        public void processAction() {
-            try {
-                action.accept(inst);
-            } catch (Exception error) {
-                // print error to system err avoid clutter of stdout
-                error.printStackTrace(System.err);
-            }
-        }
-    }
 }

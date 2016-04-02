@@ -1,5 +1,8 @@
 package auto;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -17,10 +20,35 @@ public final class Main {
     private static final String END_PROGRAM = "End Program";
     // The car used for this program
     private static final Car car = new Car();
+    private static final String FILE_NAME = System.getProperty("file_name", "output.txt");
+    private static FileWriter fileWriter;
     private static Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) {
+        try {
+            fileWriter = new FileWriter(new File(FILE_NAME));
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    fileWriter.close();
+                } catch (IOException error) {
+                    System.out.println("Could not close the stream: " + error.getMessage());
+                }
+            }));
+        } catch (IOException error) {
+            System.out.println("Problems opening the file: " + error.getMessage());
+        }
+
+        // The menu forever
         while(menu());
+    }
+
+    /** Print the output to the file */
+    public static void println(String value) {
+        try {
+            fileWriter.write(value + '\n');
+        } catch (IOException error) {
+            System.out.println("Could not write to the file: " + error.getMessage());
+        }
     }
 
     /** print the menu, return true for continue, false to close program */

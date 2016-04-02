@@ -14,11 +14,15 @@ public class Wheel {
 
     /** Move the wheel */
     public void move() {
-        System.out.println(String.format(MOVE, ID_MAP[id]));
+        String message = String.format(MOVE, ID_MAP[id]);
+        System.out.println(message);
+        Main.println(message);
     }
 
     /** Stop the wheel */
     public void stop() {
-        System.out.println(String.format(STOP, ID_MAP[id]));
+        String message = String.format(STOP, ID_MAP[id]);
+        System.out.println(message);
+        Main.println(message);
     }
 }

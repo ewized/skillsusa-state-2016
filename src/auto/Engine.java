@@ -12,7 +12,9 @@ public class Engine {
 
     /** Starts the car, when the car is all ready on its %$?!s at you */
     public void start() {
-        System.out.println(started ? START_MESSAGE_ERROR : START_MESSAGE);
+        String message = started ? START_MESSAGE_ERROR : START_MESSAGE;
+        System.out.println(message);
+        Main.println(message);
         if (!started) {
             started = true;
         }
@@ -20,7 +22,9 @@ public class Engine {
 
     /** Stops the car, when the car is stopped it %!?$s at you */
     public void stop() {
-        System.out.println(started ? STOP_MESSAGE : STOP_MESSAGE_ERROR);
+        String message = started ? STOP_MESSAGE : STOP_MESSAGE_ERROR;
+        System.out.println(message);
+        Main.println(message);
         if (started) {
             started = false;
         }

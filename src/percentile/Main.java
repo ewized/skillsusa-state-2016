@@ -8,14 +8,17 @@ import java.util.*;
 
 /** This program will write the file from arg -Dfile_name or use the default */
 public class Main {
+    // translations
     private static final String ASK_PERCENTILE = "Enter a percentile to look for: ";
     private static final String ASK_DATA_SET = "Enter a data set separated by commas: ";
     private static final String WHOLE_NUMBER = "Enter a whole number between 0-100";
     private static final String VIEW_PERCENTILE = "Change and view percentile";
     private static final String FILE_NAME = System.getProperty("file_name", "output.txt");
+    // inst vars
     private static FileWriter fileWriter;
     private static Scanner in = new Scanner(System.in);
 
+    /** The main method to rule them all */
     public static void main(String[] args) {
         fileWriter = Commons.createFileWriter(FILE_NAME).orElse(null);
 
@@ -25,7 +28,9 @@ public class Main {
         Percentile data = new Percentile(percentile, dataSet);
         data.outputPercentile();
 
-        while (true) menu(data);
+        while (true) {
+            menu(data);
+        }
     }
 
     /** Ask the user for the data set */
@@ -111,6 +116,7 @@ public class Main {
         private int percentile;
         private int[] dataset;
 
+        /** Create a percentile object */
         public Percentile(int percentile, int[] dataset) {
             this.percentile = percentile;
             this.dataset = dataset;

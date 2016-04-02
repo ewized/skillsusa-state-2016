@@ -8,7 +8,7 @@ public class Engine {
     private static final String STOP_MESSAGE = "The engine has stopped";
     private static final String STOP_MESSAGE_ERROR = "The car is all ready off, *it does nothing*";
     // The instance vars
-    private boolean started = false;
+    private boolean started = false; // is the engine started or not
 
     /** Starts the car, when the car is all ready on its %$?!s at you */
     public void start() {

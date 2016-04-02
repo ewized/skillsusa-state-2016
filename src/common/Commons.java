@@ -62,7 +62,6 @@ public final class Commons {
             if (value < 0 || value > itemSize) {
                 System.out.println(String.format(Commons.INPUT_ERROR, itemSize));
             }
-
             System.out.println(Commons.SEPARATE);
             items.get(value).processAction();
             System.out.println(Commons.SEPARATE);

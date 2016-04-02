@@ -8,7 +8,7 @@ public class Door {
     private static final String DOOR_CLOSE = "This door has closed";
     private static final String DOOR_CLOSE_ERROR = "This door can not be closed further, *hears the door gets crushed*";
     // Instance vars
-    private boolean opened = false;
+    private boolean opened = false; // is the door open or not
 
     /** Will try to open the door of the car */
     public void open() {

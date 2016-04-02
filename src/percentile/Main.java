@@ -10,6 +10,8 @@ import java.util.*;
 public class Main {
     private static final String ASK_PERCENTILE = "Enter a percentile to look for: ";
     private static final String ASK_DATA_SET = "Enter a data set separated by commas: ";
+    private static final String WHOLE_NUMBER = "Enter a whole number between 0-100";
+    private static final String VIEW_PERCENTILE = "Change and view percentile";
     private static final String FILE_NAME = System.getProperty("file_name", "output.txt");
     private static FileWriter fileWriter;
     private static Scanner in = new Scanner(System.in);
@@ -21,14 +23,15 @@ public class Main {
         int[] dataSet = askDataSet();
 
         Percentile data = new Percentile(percentile, dataSet);
-        outputPercentile(data);
+        data.outputPercentile();
+
         while (true) menu(data);
     }
 
     /** Ask the user for the data set */
     public static int[] askDataSet() {
         String input = readInput(ASK_DATA_SET);
-        int[] data =Sorting.mergeSort(parseInput(input));
+        int[] data = Sorting.mergeSort(parseInput(input));
         for (int i : data) {
             System.out.print(i + " ");
         }
@@ -40,7 +43,12 @@ public class Main {
     public static int askPercentile() {
         try {
             String input = readInput(ASK_PERCENTILE);
-            return Math.abs(Integer.parseInt(input));
+            int number = Math.abs(Integer.parseInt(input));
+            if (number < 0 || number > 100) {
+                System.out.println(WHOLE_NUMBER);
+                return askPercentile();
+            }
+            return number;
         } catch (NumberFormatException error) {
             System.out.println(Commons.ASK_ERROR);
             in = new Scanner(System.in);
@@ -67,25 +75,18 @@ public class Main {
     /** Generate the list of menu options with the instance of the percentile */
     public static List<MenuOption<Percentile>> generateMenu(Percentile percentile) {
         return Arrays.asList(
-            new MenuOption<>(percentile, "Change and view percentile", arg -> {
+            new MenuOption<>(percentile, VIEW_PERCENTILE, arg -> {
                 in = new Scanner(System.in);
                 arg.percentile = askPercentile();
-                outputPercentile(arg);
+                arg.outputPercentile();
             }),
-            new MenuOption<>(percentile, "End Program", arg -> System.exit(0))
+            new MenuOption<>(percentile, Commons.END_PROGRAM, arg -> System.exit(0))
         );
     }
 
     /** Print the output to the file when the file exists */
     public static void println(String value) {
         Commons.println(fileWriter, value);
-    }
-
-    /** Out put the percentile of the data set */
-    public static void outputPercentile(Percentile percentile) {
-        int index = (int) Math.ceil((percentile.percentile * 100) % percentile.dataset.length);
-        System.out.println(percentile.percentile + ": " + percentile.dataset[index]);
-        println(String.valueOf(percentile.dataset[index]));
     }
 
     /** Gather the list of inputs from a string of numbers separated by a comma */
@@ -102,7 +103,7 @@ public class Main {
             } catch (NumberFormatException | IllegalStateException error) {} // do not need anything
         }
 
-        return Arrays.copyOf(inputs, pos + 1);
+        return Arrays.copyOf(inputs, pos);
     }
 
     /** A data to pass around the percentile for the menu system */
@@ -113,6 +114,14 @@ public class Main {
         public Percentile(int percentile, int[] dataset) {
             this.percentile = percentile;
             this.dataset = dataset;
+        }
+
+        /** Out put the percentile of the data set */
+        public void outputPercentile() {
+            int index = (int) Math.ceil((percentile / 100.0) * dataset.length);
+            index = index == 0 ? 0 : index - 1;
+            System.out.println(String.format("percentile: %s%%, value: %s", percentile, dataset[index]));
+            println(String.valueOf(dataset[index]));
         }
     }
 }

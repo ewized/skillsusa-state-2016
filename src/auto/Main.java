@@ -79,6 +79,4 @@ public final class Main {
             new MenuOption<>(car, END_PROGRAM, arg -> System.exit(0))
         );
     }
-
-
 }

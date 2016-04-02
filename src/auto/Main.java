@@ -4,7 +4,6 @@ import common.Commons;
 import common.MenuOption;
 
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 /** This is the drive class it contains the menu an the interface to interact with the car */

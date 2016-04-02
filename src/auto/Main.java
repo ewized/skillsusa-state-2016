@@ -3,6 +3,7 @@ package auto;
 import java.util.*;
 import java.util.function.Consumer;
 
+/** This is the drive class it contains the menu an the interface to interact with the car */
 public class Main {
     // Translations
     private static final String SEPERATE = "--------------------";

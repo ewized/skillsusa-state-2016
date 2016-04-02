@@ -4,9 +4,9 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /** This is the drive class it contains the menu an the interface to interact with the car */
-public class Main {
+public final class Main {
     // Translations
-    private static final String SEPERATE = "--------------------";
+    private static final String SEPARATE = "--------------------";
     private static final String INPUT_ERROR = "Invalid select use 1-%d";
     private static final String INPUT = "Select one: ";
     private static final String UNKNOWN = "unknown";
@@ -40,9 +40,9 @@ public class Main {
                 System.out.println(String.format(INPUT_ERROR, itemSize));
             }
 
-            System.out.println(SEPERATE);
+            System.out.println(SEPARATE);
             items.get(value).processAction();
-            System.out.println(SEPERATE);
+            System.out.println(SEPARATE);
             state = true;
         } catch (InputMismatchException | IllegalStateException | IndexOutOfBoundsException error) {
             System.out.println(String.format(INPUT_ERROR, itemSize));

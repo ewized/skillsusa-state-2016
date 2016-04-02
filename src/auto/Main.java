@@ -8,6 +8,12 @@ public class Main {
     private static final String SEPERATE = "--------------------";
     private static final String INPUT_ERROR = "Invalid select use 1-%d";
     private static final String INPUT = "Select one: ";
+    private static final String UNKNOWN = "unknown";
+    private static final String MOVE_WHEELS = "Move the wheels";
+    private static final String START_ENGINE = "Start the engine";
+    private static final String OPEN_DOORS = "Open the doors";
+    private static final String STOP_CAR = "Stop the car";
+    private static final String END_PROGRAM = "End Program";
     // The car used for this program
     private static final Car car = new Car();
     private static Scanner in = new Scanner(System.in);
@@ -48,11 +54,11 @@ public class Main {
     /** Generate the list of menu options with the instance of the car */
     public static List<MenuOption<Car>> generateMenu(Car car) {
         return Arrays.asList(
-            new MenuOption<>(car, "Move the wheels", Car::moveWheels),
-            new MenuOption<>(car, "Start the engine", Car::startEngine),
-            new MenuOption<>(car, "Open the doors", Car::openDoors),
-            new MenuOption<>(car, "Stop the car", Car::stopCar),
-            new MenuOption<>(car, "End Program", arg -> System.exit(0))
+            new MenuOption<>(car, MOVE_WHEELS, Car::moveWheels),
+            new MenuOption<>(car, START_ENGINE, Car::startEngine),
+            new MenuOption<>(car, OPEN_DOORS, Car::openDoors),
+            new MenuOption<>(car, STOP_CAR, Car::stopCar),
+            new MenuOption<>(car, END_PROGRAM, arg -> System.exit(0))
         );
     }
 
@@ -67,7 +73,7 @@ public class Main {
         public MenuOption(T inst, String itemName, Consumer<T> action) {
             this.inst = Objects.requireNonNull(inst, "The instance must not be null");
             this.action = Objects.requireNonNull(action, "The action must not be null");
-            this.itemName = (itemName == null) ? "unknown" : itemName;
+            this.itemName = (itemName == null) ? UNKNOWN : itemName;
         }
 
         /** Get the name of the item */
